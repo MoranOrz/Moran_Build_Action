@@ -2,12 +2,19 @@ name:OnePlus_Pad_2_Pro
 on:
   workflows_dispatch:
     inputs:
+      REPO_MANIFEST:
+        description: "请选择要编译的机型："
+        required: true
+        type: choice
+        options:
+          - 'oneplus_pad_2_pro'
+        default: 'oneplus_pad_2_pro'
       KERNEL_SUFFIX:
-          description: '内核名称修改'
+          description: '✏️ 内核名称修改(可emjio和符号)'
           required: true
           default: '-android15-8-g0261dbe3cf7e-ab12786384-4k'
       KERNEL_TIME:
-          description: '内核时间修改'
+          description: '⏰ 内核构建时间(默认原构建时间)'
           required: true
           default: 'Wed Dec 11 19:16:38 UTC 2024'
       enable_feature_x:
@@ -34,6 +41,7 @@ on:
 
 jobs:
   build:
+    name: Build_${{ github.event.inputs.REPO_MANIFEST }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -44,6 +52,10 @@ jobs:
       run: |
         echo "构建前磁盘空间："
         df -h
+
+    - name: ⚙️ Set device-specific CCACHE_DIR (设置ccache路径)
+      run: |
+        echo "CCACHE_DIR=$HOME/.ccache_${REPO_MANIFEST}" >> $GITHUB_ENV
     
     - name: 📦 Configure Git (设置下载账户)
       run: |
@@ -65,7 +77,7 @@ jobs:
       uses: actions/cache@v3
       with:
         path: ${{ env.HOME }}/apt-cache
-        key: ${{ runner.os }}-apt-${{ hashFiles('.github/workflows/Build.yml') }}
+        key: ${{ runner.os }}-apt-${{ hashFiles('.github/workflows/OnePlus_Build.yml') }}
         restore-keys: |
           ${{ runner.os }}-apt-
     
@@ -82,7 +94,7 @@ jobs:
           libxml2-utils rsync unzip
         echo "✅ 依赖安装完成"
     
-    - name: 📥 Restore ccache (载入 机型：${{ env.DEVICES_NAME }}的 ccache 缓存)
+    - name: 📥 Restore ccache (载入 ccache 缓存)
       uses: actions/cache@v3
       with:
         path: ${{ env.CCACHE_DIR }}
@@ -91,7 +103,7 @@ jobs:
           ccache-${{ runner.os }}-${{ env.REPO_MANIFEST }}-
           ccache-${{ runner.os }}-
     
-    - name: 📥 Init ccache (如果是第一次运行则初始化Cceche)
+    - name: 📥 Init ccache (如果是第一次运行则初始化ccache)
       run: |
         export CCACHE_COMPILERCHECK="%compiler% -dumpmachine; %compiler% -dumpversion"
         export CCACHE_NOHASHDIR="true"
@@ -122,7 +134,17 @@ jobs:
       - name: 📥 Initialize repo and sync (初始化repo并同步内核源码)
         run: |
          mkdir kernel_workspace && cd kernel_workspace
-         repo init -u https://github.com/showdo/kernel_manifest.git -b refs/heads/oneplus/sm8750 -m ${REPO_MANIFEST}.xml --depth=1
+         repo init -u https://github.com/MoranOrz/kernel_manifest.git -b refs/heads/oneplus/sm8750 -m ${REPO_MANIFEST}.xml --depth=1
          repo --trace sync -c -j$(nproc --all) --no-tags
          rm kernel_platform/common/android/abi_gki_protected_exports_* || echo "No protected exports!"
          rm kernel_platform/msm-kernel/android/abi_gki_protected_exports_* || echo "No protected exports!"
+
+      - name: ⚙️ Set SuKiSU Ultra (设置SuKiSU Ultra)
+        run: |
+          cd kernel_workspace/kernel_platform
+          curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/susfs-main/kernel/setup.sh" | bash -s susfs-main
+          cd ./KernelSU
+          KSU_VERSION=$(expr $(/usr/bin/git rev-list --count main) "+" 10700)
+          echo "KSUVER=$KSU_VERSION" >> $GITHUB_ENV
+          export KSU_VERSION=$KSU_VERSION
+          sed -i "s/DKSU_VERSION=12800/DKSU_VERSION=${KSU_VERSION}/" kernel/Makefile
