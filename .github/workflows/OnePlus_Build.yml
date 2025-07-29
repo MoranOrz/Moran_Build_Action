@@ -160,14 +160,15 @@ jobs:
           cd kernel_workspace
           git clone https://gitlab.com/simonpunk/susfs4ksu.git -b gki-android15-6.6
           git clone https://github.com/SukiSU-Ultra/SukiSU_patch.git
+          git clone https://github.com/MoranOrz/kernel_patch.git
           
           cd kernel_platform        
           cp ../susfs4ksu/kernel_patches/50_add_susfs_in_gki-android15-6.6.patch ./common/
           cp ../susfs4ksu/kernel_patches/fs/* ./common/fs/
           cp ../susfs4ksu/kernel_patches/include/linux/* ./common/include/linux/
           
-          cp ${{ github.workspace }}/zram/001-lz4.patch ./common/
-          cp ${{ github.workspace }}/zram/lz4armv8.S ./common/lib/
+          cp ../kernel_patches/zram/001-lz4.patch ./common/
+          cp ../kernel_patches/zram/lz4armv8.S ./common/lib/
           
           #cp -r ../SukiSU_patch/other/zram/lz4k/include/linux/* ./common/include/linux
           #cp -r ../SukiSU_patch/other/zram/lz4k/lib/* ./common/lib
@@ -177,7 +178,7 @@ jobs:
           # Apply patches
           cd ./common
 
-          patch -p1 < 001-lz4.patch || { echo "::error ::应用001-lz4.patch失败"; exit 1; }
+          git apply -p1 < 001-lz4.patch || { echo "::error ::应用001-lz4.patch失败"; exit 1; }
           
           patch -p1 < 50_add_susfs_in_gki-android15-6.6.patch || true
           cp ../../SukiSU_patch/hooks/syscall_hooks.patch ./
