@@ -22,11 +22,6 @@ on:
           required: false
           default: false
           type: boolean
-      enable_feature_y:
-        description: "是否启用lz4kd"
-        required: false
-        default: false
-        type: boolean
       enable_feature_z:
         description: "是否添加风驰驱动"
         required: false
@@ -46,7 +41,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-        fetch-depth: 0
+          fetch-depth: 0
     
       - name: 📊 Check Disk Space (检查磁盘空间)
         run: |
