@@ -53,7 +53,11 @@ jobs:
         run: |
             echo "REPO_MANIFEST=${{ github.event.inputs.REPO_MANIFEST }}" >> $GITHUB_ENV
             echo "DEVICES_NAME=${{ github.event.inputs.REPO_MANIFEST }}" >> $GITHUB_ENV
-      
+
+      - name: ⏰ Set Kernel Time (设置内核构建时间)
+        run: |
+          echo "KERNEL_TIME=${{ github.event.inputs.KERNEL_TIME }}" >> $GITHUB_ENV
+
       - name: ⚙️ Set device-specific CCACHE_DIR (设置ccache路径)
         run: |
           echo "CCACHE_DIR=$HOME/.ccache_${REPO_MANIFEST}" >> $GITHUB_ENV
@@ -163,7 +167,7 @@ jobs:
           cp ../susfs4ksu/kernel_patches/include/linux/* ./common/include/linux/
           
           cp ${{ github.workspace }}/zram/001-lz4.patch ./common/
-          cp ${{ github.workspace }}/zram/lz4armv8.S ./common/lib
+          cp ${{ github.workspace }}/zram/lz4armv8.S ./common/lib/
           
           #cp -r ../SukiSU_patch/other/zram/lz4k/include/linux/* ./common/include/linux
           #cp -r ../SukiSU_patch/other/zram/lz4k/lib/* ./common/lib
@@ -173,7 +177,7 @@ jobs:
           # Apply patches
           cd ./common
 
-          patch -p1 < 001-lz4.patch
+          patch -p1 < 001-lz4.patch || { echo "::error ::应用001-lz4.patch失败"; exit 1; }
           
           patch -p1 < 50_add_susfs_in_gki-android15-6.6.patch || true
           cp ../../SukiSU_patch/hooks/syscall_hooks.patch ./
@@ -298,7 +302,7 @@ jobs:
           make -j$(nproc --all) LLVM=1 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CC="ccache clang" RUSTC=../../prebuilts/rust/linux-x86/1.73.0b/bin/rustc PAHOLE=../../prebuilts/kernel-build-tools/linux-x86/bin/pahole LD=ld.lld HOSTLD=ld.lld O=out KCFLAGS+=-O2  Image
           
       - name: 📦 Make AnyKernel3 (NoKPM)
-        if: ${{inputs.enable_feature_x }}
+        if: ${{ inputs.enable_feature_x }}
         run: |
           git clone https://github.com/showdo/AnyKernel3.git --depth=1 AnyKernel3_NoKPM
           rm -rf ./AnyKernel3_NoKPM/.git
