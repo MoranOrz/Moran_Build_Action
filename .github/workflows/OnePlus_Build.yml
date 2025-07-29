@@ -18,17 +18,17 @@ on:
           required: true
           default: 'Wed Dec 11 19:16:38 UTC 2024'
       enable_feature_x:
-          description: '是否启用KPM'
+          description: 'KPM'
           required: false
           default: false
           type: boolean
       enable_feature_z:
-        description: "是否添加风驰驱动"
+        description: "风驰驱动"
         required: false
         default: false
         type: boolean
       enable_feature_b:
-        description: "添加BBR控制算法"
+        description: "BBR控制算法"
         required: false
         default: true
         type: boolean
