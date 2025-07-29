@@ -1,6 +1,6 @@
 name: OnePlus_Pad_2_Pro
 on:
-  workflows_dispatch:
+  workflow_dispatch:
     inputs:
       REPO_MANIFEST:
         description: "请选择要编译的机型："
