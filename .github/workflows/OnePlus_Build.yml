@@ -179,8 +179,8 @@ jobs:
           # Apply patches
           cd ./common
 
-          git apply -p1 < 001-lz4.patch
-          patch -p1 < 002-zstd.patch
+          git apply -p1 < 001-lz4.patch || true
+          patch -p1 < 002-zstd.patch || true
           
           patch -p1 < 50_add_susfs_in_gki-android15-6.6.patch || true
           cp ../../SukiSU_patch/hooks/syscall_hooks.patch ./
