@@ -1,4 +1,4 @@
-name: OnePlus_Pad_2_Pro
+name: OnePlus_Build
 on:
   workflow_dispatch:
     inputs:
