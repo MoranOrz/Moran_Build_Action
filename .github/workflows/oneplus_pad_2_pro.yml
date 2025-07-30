@@ -227,5 +227,5 @@ jobs:
       - name: Upload AnyKernel3
         uses: actions/upload-artifact@v4
         with:
-          name: SukiSu${{ inputs.enable_kpm == 'true' && '_KPM' || '_NoKPM' }}_${{ env.KSUVER }}_pad_2_pro
+          name: SukiSu${{ github.event.inputs.enable_kpm == 'true' && '_KPM' || '_NoKPM' }}_${{ env.KSUVER }}_pad_2_pro
           path: ./AnyKernel3/*
