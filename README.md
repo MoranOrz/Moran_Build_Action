@@ -1,5 +1,5 @@
 [![Github](https://img.shields.io/badge/-Moran-181717?style=flat&logo=github&logoColor=white)](https://github.com/MoranOrz)
-[![一加内核开源地址](https://img.shields.io/badge/开源-EB0029?logo=oneplus&logoColor=white&style=flat-square)](https://github.com/OnePlusOSS/kernel_manifest)
+[![一加内核开源地址](https://img.shields.io/badge/开源-EB0029?logo=oneplus&logoColor=white&style=flat-square)](https://github.com/OnePlusOSS/kernel_manifest/tree/oneplus/sm8750)
 <br>
 本项目借鉴：
 <br>
