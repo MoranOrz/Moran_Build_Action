@@ -11,13 +11,13 @@ jobs:
       CCACHE_DIR: /home/runner/.ccache
       CCACHE_MAXSIZE: 8G
     steps:
-      - name: 测试路径
+      - name: Check if build artifact exists
         run: |
-          FILE_PATH=".github/workflows/Bin/main.bin"
+          FILE_PATH="Bin/main.bin"
           if [ -f "$FILE_PATH" ]; then
             echo "找到文件"
           else
             echo "错误：找不到文件 $FILE_PATH"
-            ls -la .github/workflows/
+            ls -la Bin/
             exit 1
           fi
