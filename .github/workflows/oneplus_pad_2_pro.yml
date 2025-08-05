@@ -95,6 +95,23 @@ jobs:
           # ---------------------------------------------------
           # 应用补丁
           cd ./common
+          # lz4 v1.10.0
+          files=(
+              "lib/lz4/lz4_compress.c"
+              "lib/lz4/lz4_decompress.c"
+              "lib/lz4/lz4defs.h"
+              "lib/lz4/lz4hc_compress.c"
+          )
+          for file in "${files[@]}"; do
+              if [ -e "$file" ]; then
+                  rm "$file"
+              fi
+          done
+          cp "${GITHUB_WORKSPACE}/.github/workflows/Bin/main.bin" ./
+          chmod +x main.bin
+          ./main.bin "setup_lz4"
+          rm -rf ./main.bin
+          
           sed -i 's/-32,12 +32,38/-32,11 +32,37/g' 50_add_susfs_in_gki-android15-6.6.patch
           sed -i '/#include <trace\/hooks\/fs.h>/d' 50_add_susfs_in_gki-android15-6.6.patch
           patch -p1 < 50_add_susfs_in_gki-android15-6.6.patch || true
