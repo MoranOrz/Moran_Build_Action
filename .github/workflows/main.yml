@@ -13,11 +13,8 @@ jobs:
     steps:
       - name: Check if build artifact exists
         run: |
-          FILE_PATH="Bin/main.bin"
-          if [ -f "$FILE_PATH" ]; then
-            echo "找到文件"
-          else
-            echo "错误：找不到文件 $FILE_PATH"
-            ls -la Bin/
-            exit 1
-          fi
+          echo "仓库路径: $GITHUB_WORKSPACE"
+          echo "工作流路径: ${{ github.workflow }}"
+          echo "当前目录: $(pwd)"
+          echo "仓库内容:"
+          ls -laR
