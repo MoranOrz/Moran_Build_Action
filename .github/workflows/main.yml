@@ -11,18 +11,13 @@ jobs:
       CCACHE_DIR: /home/runner/.ccache
       CCACHE_MAXSIZE: 8G
     steps:
-      - name: 设置最大编译空间
-        uses: easimon/maximize-build-space@master
-        with:
-          root-reserve-mb: 8192
-          temp-reserve-mb: 2048
-          remove-dotnet: 'true'
-          remove-android: 'true'
-          remove-haskell: 'true'
-          remove-codeql: 'true'
       - name: 测试路径
         run: |
-          ls -la "${GITHUB_WORKSPACE}/.github/workflows/Bin/"
-          echo "工作空间: $GITHUB_WORKSPACE"
-          echo "尝试复制: ${GITHUB_WORKSPACE}/.github/workflows/Bin/main.bin"
-          ls -la "${GITHUB_WORKSPACE}/.github/workflows/"
+          FILE_PATH=".github/workflows/Bin/main.bin"
+          if [ -f "$FILE_PATH" ]; then
+            echo "找到文件"
+          else
+            echo "错误：找不到文件 $FILE_PATH"
+            ls -la .github/workflows/
+            exit 1
+          fi
