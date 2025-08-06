@@ -11,6 +11,9 @@ jobs:
       CCACHE_DIR: /home/runner/.ccache
       CCACHE_MAXSIZE: 8G
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Check if build artifact exists
         run: |
           echo "仓库路径: $GITHUB_WORKSPACE"
@@ -18,3 +21,6 @@ jobs:
           echo "当前目录: $(pwd)"
           echo "仓库内容:"
           ls -laR
+          if "${GITHUB_WORKSPACE}/.github/workflows/Bin/main.bin"; then
+            echo "存在文件"
+          if
